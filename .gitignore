@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.uv/
+.pytest_cache/
+.ruff_cache/
+
+# Experiment outputs
+artifacts/
+checkpoints/
+outputs/
+logs/
+videos/
+*.mp4
+*.mkv
+*.bag
+
+# Local and private configuration
+.env
+.env.*
+private/
+*.local.*
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/
