@@ -39,4 +39,6 @@ Large checkpoints, videos, private manifests, credentials, and simulator bundles
 
 This repository currently contains the project baseline and plan. No Lambda-Sim quadrotor training run has been claimed yet.
 
+The project plan includes a browser-accessible training review viewer: Lambda-Sim renders recorded quadrotor states to video, with synchronized position, disturbance, and control traces. It will render frozen checkpoints outside the PPO hot path so visualization does not silently reduce training throughput.
+
 See [`docs/PLAN.md`](docs/PLAN.md) for the staged implementation and acceptance gates.

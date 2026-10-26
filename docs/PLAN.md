@@ -43,6 +43,15 @@ Report XY RMSE, Z RMSE, maximum horizontal displacement, recovery time, residual
 
 Primary success threshold: PPO improves held-out dynamic-disturbance paired XY RMSE by at least 20% against both baselines, all three training seeds improve in the same direction, no-disturbance XY/Z RMSE degradation is <=10%, and failures do not increase. A threshold failure remains a valid negative result.
 
+## Training viewer
+
+- Capture a bounded, low-rate ring of actual simulator states and synchronized telemetry during training: target/estimated/true XYZ (truth is marked as evaluation-only), disturbance, attitude, nominal command, RL residual, reward, episode, and PPO update/checkpoint identity.
+- After each selected checkpoint, run a frozen deterministic episode and render its recorded states with Lambda-Sim's native renderer in a separate process. Do not integrate physics in the renderer and do not put rendering in the PPO hot path.
+- Publish a local browser page with a 3D video, playback controls, timeline, and synchronized XYZ/error/disturbance/residual plots. Clearly label the checkpoint, seed, disturbance case, simulation time, and whether the clip is frozen evaluation or a training capture.
+- Keep full-resolution rendering on the normal GPU queue; the viewer must fall back to the last completed clip while training owns the GPU. Any live low-rate view is optional and must be measured for throughput impact before enabling during formal runs.
+
+Gate: a known replay produces a nonblank video with correct position/orientation and synchronized telemetry; recorded state hashes and simulation timestamps remain bound to the clip. The renderer is presentation-only and cannot be cited as a second physical evaluation.
+
 ## Deployment boundary
 
 The future Crazyflie integration must verify, with hardware, external localization accuracy and delay, coordinate signs, acceleration feed-forward encoding, radio loss behavior, watchdog/stop behavior, and actual 50 Hz timing. Until then, the correct label is “deployment-oriented simulation validation”.
