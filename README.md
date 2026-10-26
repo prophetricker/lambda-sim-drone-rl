@@ -41,4 +41,12 @@ This repository currently contains the project baseline and plan. No Lambda-Sim 
 
 The project plan includes a browser-accessible training review viewer: Lambda-Sim renders recorded quadrotor states to video, with synchronized position, disturbance, and control traces. It will render frozen checkpoints outside the PPO hot path so visualization does not silently reduce training throughput.
 
+Preview the viewer before training:
+
+```bash
+python3 -m http.server 4173 --directory viewer
+```
+
+Then open <http://127.0.0.1:4173/>. Its built-in run is labeled synthetic and is only for reviewing playback and telemetry. Load a recorded run with **Open run**; see [`viewer/README.md`](viewer/README.md) for the JSON contract. Formal training is gated on viewer acceptance with an actual Lambda-Sim trajectory.
+
 See [`docs/PLAN.md`](docs/PLAN.md) for the staged implementation and acceptance gates.

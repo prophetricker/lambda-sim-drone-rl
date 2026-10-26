@@ -52,6 +52,8 @@ Primary success threshold: PPO improves held-out dynamic-disturbance paired XY R
 
 Gate: a known replay produces a nonblank video with correct position/orientation and synchronized telemetry; recorded state hashes and simulation timestamps remain bound to the clip. The renderer is presentation-only and cannot be cited as a second physical evaluation.
 
+Formal-training gate: before any long-budget or multi-seed PPO run, the viewer must load a trajectory captured from the actual Lambda-Sim quadrotor environment, show correct orientation and signed XYZ displacement, keep the playhead synchronized with disturbances and residuals, and complete desktop and narrow-screen review. Synthetic preview data alone does not pass this gate.
+
 ## Deployment boundary
 
 The future Crazyflie integration must verify, with hardware, external localization accuracy and delay, coordinate signs, acceleration feed-forward encoding, radio loss behavior, watchdog/stop behavior, and actual 50 Hz timing. Until then, the correct label is “deployment-oriented simulation validation”.

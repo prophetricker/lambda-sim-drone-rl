@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#eef2f4" />
+    <title>Lambda-Sim Flight Review</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Lambda-Sim flight review home">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+          <span>FLIGHT REVIEW <small>LAMBDA-SIM / QUADROTOR</small></span>
+        </a>
+        <div class="topbar-meta">
+          <span class="run-status"><i></i><span id="runStatus">REPLAY READY</span></span>
+          <button class="button button-subtle" id="openRun" type="button">Open run</button>
+          <input id="runFile" type="file" accept=".json,application/json" hidden />
+        </div>
+      </header>
+
+      <section class="runline" aria-label="Run details">
+        <div><span class="eyebrow">RUN</span><strong id="runName">synthetic-gust-demo</strong><span class="demo-badge" id="dataBadge">SYNTHETIC PREVIEW</span></div>
+        <div class="run-details"><span>Seed <b id="seedValue">42</b></span><span>Controller <b id="controllerValue">PPO residual</b></span><span>Checkpoint <b id="checkpointValue">demo · no weights</b></span><span>Disturbance <b id="disturbanceValue">+Y pulse</b></span></div>
+      </section>
+
+      <section class="main-grid">
+        <section class="viewport-section" aria-label="3D flight replay">
+          <div class="viewport-heading">
+            <div><span class="eyebrow">WORLD VIEW</span><h1>Position hold</h1></div>
+            <div class="view-toggles" role="group" aria-label="Scene display">
+              <label><input type="checkbox" id="showTrail" checked /><span>Trail</span></label>
+              <label><input type="checkbox" id="showVectors" checked /><span>Disturbance</span></label>
+              <button class="icon-button" id="resetCamera" type="button" aria-label="Reset camera" data-tip="Reset camera">↺</button>
+            </div>
+          </div>
+          <div class="viewport-wrap">
+            <div id="scene" role="img" aria-label="Interactive 3D replay of a quadrotor holding a position under a lateral disturbance"></div>
+            <div class="scene-watermark" id="sceneWatermark">DEMO DATA · NOT A PHYSICS RUN</div>
+            <div class="scene-readout"><span>SIM TIME</span><b id="simTime">00:00.0</b><span class="readout-divider"></span><span>ALTITUDE</span><b id="altitude">1.00 m</b></div>
+            <div class="legend"><span><i class="legend-drone"></i>Vehicle</span><span><i class="legend-target"></i>Target</span><span><i class="legend-disturbance"></i>Disturbance</span></div>
+          </div>
+          <div class="transport">
+            <button class="transport-button" id="stepBack" type="button" aria-label="Step back" data-tip="Step back">|◀</button>
+            <button class="transport-button play-button" id="playPause" type="button" aria-label="Play replay" data-tip="Play replay">▶</button>
+            <button class="transport-button" id="stepForward" type="button" aria-label="Step forward" data-tip="Step forward">▶|</button>
+            <div class="timeline-wrap">
+              <div class="timeline-labels"><span id="elapsedLabel">0.0 s</span><span id="durationLabel">30.0 s</span></div>
+              <input id="timeline" type="range" min="0" max="300" value="0" aria-label="Replay timeline" />
+              <div class="event-track" id="eventTrack" aria-hidden="true"><span class="event-marker" style="left:27%"></span></div>
+            </div>
+            <label class="speed-control"><span>Speed</span><select id="playbackSpeed" aria-label="Playback speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
+          </div>
+        </section>
+
+        <aside class="telemetry" aria-label="Current state telemetry">
+          <div class="telemetry-heading"><span class="eyebrow">STATE TELEMETRY</span><span class="live-dot">FRAME SYNC</span></div>
+          <div class="position-table" role="table" aria-label="Position and velocity">
+            <div class="table-head" role="row"><span></span><span>ACTUAL</span><span>TARGET</span><span>ERROR</span></div>
+            <div class="position-row" role="row"><b>X</b><span id="actualX">0.000</span><span>0.000</span><strong id="errorX">0.000</strong><small>m</small></div>
+            <div class="position-row" role="row"><b>Y</b><span id="actualY">0.000</span><span>0.000</span><strong id="errorY">0.000</strong><small>m</small></div>
+            <div class="position-row" role="row"><b>Z</b><span id="actualZ">1.000</span><span>1.000</span><strong id="errorZ">0.000</strong><small>m</small></div>
+            <div class="position-row velocity-row" role="row"><b>V</b><span id="velocity">0.000</span><span>0 target</span><strong id="speed">0.000</strong><small>m/s</small></div>
+          </div>
+          <div class="metric-pair">
+            <div><span class="eyebrow">ATTITUDE</span><strong id="attitude">R 0.0° <i>·</i> P 0.0°</strong></div>
+            <div><span class="eyebrow">XY ERROR</span><strong id="xyError">0.000 <small>m</small></strong></div>
+          </div>
+          <div class="control-readouts">
+            <div class="readout-head"><span class="eyebrow">CONTROL / DISTURBANCE</span><span>WORLD FRAME · m/s²</span></div>
+            <div class="bar-readout"><span>Base ctrl</span><div><i id="baseBar"></i></div><b id="baseValue">0.00</b></div>
+            <div class="bar-readout residual-readout"><span>RL residual</span><div><i id="residualBar"></i></div><b id="residualValue">0.00</b></div>
+            <div class="bar-readout wind-readout"><span>External force</span><div><i id="disturbanceBar"></i></div><b id="disturbanceValueNow">0.00</b></div>
+          </div>
+          <div class="episode-stats">
+            <div><span class="eyebrow">EPISODE RETURN</span><strong id="episodeReturn">—</strong></div>
+            <div><span class="eyebrow">XY RMSE</span><strong id="rmse">—</strong></div>
+            <div><span class="eyebrow">MAX DRIFT</span><strong id="maxDrift">—</strong></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="plots-section" aria-label="Time series">
+        <div class="plot-heading"><div><span class="eyebrow">SYNCHRONIZED SIGNALS</span><h2>Flight telemetry</h2></div><div class="plot-selection" role="group" aria-label="Telemetry plots"><label><input type="checkbox" data-series="position" checked /><i class="swatch swatch-position"></i><span>Y position</span></label><label><input type="checkbox" data-series="disturbance" checked /><i class="swatch swatch-disturbance"></i><span>Y disturbance</span></label><label><input type="checkbox" data-series="residual" checked /><i class="swatch swatch-residual"></i><span>Y RL residual</span></label></div></div>
+        <div class="plot-canvas-wrap"><canvas id="plot" aria-label="Position, disturbance, and RL residual over simulation time"></canvas><div class="plot-cursor" id="plotCursor"></div></div>
+      </section>
+      <footer><span>Replay visualization follows recorded simulator states; it does not re-run physics.</span><span id="sourceLabel">Source: built-in synthetic demo</span></footer>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
